@@ -1,0 +1,255 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Carpe Diem</title>
+
+<style>
+body {
+    margin: 0;
+    font-family: Georgia, serif;
+    background: radial-gradient(circle at center, #1a1a1a, #000);
+    color: #e8dcc4;
+    text-align: center;
+    overflow-x: hidden;
+    transition: background 0.6s ease;
+}
+
+h1 {
+    margin-top: 90px;
+    font-size: 2.6rem;
+    letter-spacing: 2px;
+}
+
+button {
+    padding: 14px 35px;
+    font-size: 1.1rem;
+    border: 1px solid #e8dcc4;
+    background: transparent;
+    color: #e8dcc4;
+    cursor: pointer;
+    margin: 20px;
+    transition: 0.4s;
+}
+
+button:hover {
+    background: #e8dcc4;
+    color: #111;
+}
+
+#noBtn {
+    position: absolute;
+}
+
+#celebration, #deskMoment { display: none; }
+
+#poem {
+    margin-top: 40px;
+    width: 70%;
+    margin-left: auto;
+    margin-right: auto;
+    font-size: 1.3rem;
+    line-height: 2;
+    white-space: pre-line;
+    text-align: left;
+    min-height: 300px;
+}
+
+.glow {
+    color: #fff;
+    text-shadow: 0 0 8px #e8dcc4, 0 0 18px #e8dcc4;
+}
+
+.cursor {
+    display: inline-block;
+    width: 10px;
+    background: #e8dcc4;
+    margin-left: 4px;
+    animation: blink 1s infinite;
+}
+
+@keyframes blink {
+    50% { opacity: 0; }
+}
+
+#finalName {
+    margin-top: 80px;
+    font-size: 2.2rem;
+    letter-spacing: 6px;
+    opacity: 0;
+    transition: opacity 2s ease;
+}
+
+#signature {
+    margin-top: 25px;
+    font-size: 1.4rem;
+    opacity: 0;
+    text-shadow: 0 0 10px #e8dcc4, 0 0 25px #e8dcc4;
+    animation: softGlow 3s infinite alternate;
+    transition: opacity 2s ease;
+}
+
+@keyframes softGlow {
+    from { text-shadow: 0 0 5px #e8dcc4; }
+    to { text-shadow: 0 0 20px #e8dcc4, 0 0 35px #e8dcc4; }
+}
+</style>
+</head>
+
+<body>
+
+<div id="startScreen">
+    <h1>Shall We Defy Time Together?</h1>
+    <button id="yesBtn">Yes, Let Us Be Eternal</button>
+    <button id="noBtn">No, Let Time Take Us</button>
+</div>
+
+<div id="celebration">
+    <h1>Carpe Diem.</h1>
+    <button id="standBtn">Stand on the desk.</button>
+</div>
+
+<div id="deskMoment">
+    <h1>Look at the world differently.</h1>
+    <div id="poem"></div>
+    <div id="finalName">LIAHONA</div>
+    <div id="signature">From yours truly, Bien Dy &lt;3</div>
+</div>
+
+<script>
+const yesBtn = document.getElementById("yesBtn");
+const noBtn = document.getElementById("noBtn");
+const standBtn = document.getElementById("standBtn");
+
+const startScreen = document.getElementById("startScreen");
+const celebration = document.getElementById("celebration");
+const deskMoment = document.getElementById("deskMoment");
+const poemEl = document.getElementById("poem");
+const finalName = document.getElementById("finalName");
+const signature = document.getElementById("signature");
+
+let noCount = 0;
+let yesScale = 1;
+
+const tragicLines = [
+"Then we are but passing shadows.",
+"Very well. I shall write of this sorrow.",
+"Was I merely a footnote?",
+"The candle flickers lower.",
+"Even autumn warned me.",
+"So this is how poems are born."
+];
+
+noBtn.addEventListener("click", () => {
+    noCount++;
+
+    // Move button randomly
+    const x = Math.random() * (window.innerWidth - 200);
+    const y = Math.random() * (window.innerHeight - 80);
+    noBtn.style.left = x + "px";
+    noBtn.style.top = y + "px";
+
+    // Shrink slightly
+    noBtn.style.transform = `scale(${1 - noCount * 0.05})`;
+
+    // Change text
+    noBtn.innerText = tragicLines[Math.min(noCount, tragicLines.length - 1)];
+
+    // Grow Yes button
+    yesScale += 0.1;
+    yesBtn.style.transform = `scale(${yesScale})`;
+
+    // Darken background subtly
+    document.body.style.background =
+        `radial-gradient(circle at center, rgb(${26 - noCount*2},${26 - noCount*2},${26 - noCount*2}), #000)`;
+});
+
+yesBtn.onclick = () => {
+    startScreen.style.display = "none";
+    celebration.style.display = "block";
+};
+
+standBtn.onclick = () => {
+    celebration.style.display = "none";
+    deskMoment.style.display = "block";
+    typePoem();
+};
+
+const poemLines = [
+"I  remember the storms we survived together.",
+"C ourage grew in our trembling hands.",
+"H ope persisted when nights felt endless.",
+"E very mistake became a lesson we held.",
+"R eaching for each other, even when apart.",
+"I  tried harder, listening longer, loving deeper.",
+"S lowly, we rebuilt the bridges we burned.",
+"H appiness returned in quiet laughter.",
+"",
+"Y ou’ve been carrying so much, and I see it.",
+"O n every hard day, I want you to know —",
+"U nderneath it all, I am here with you.",
+"",
+"L ately, the warmth we share is undeniable.",
+"I  feel grateful for every moment we recover.",
+"A nd I treasure the effort that brought us here.",
+"H ope shines in our laughter and glances.",
+"O ur love feels warmer now.",
+"N othing worth keeping is ever easy.",
+"A nd still, I choose you, again and again."
+
+];
+
+function typePoem() {
+    let lineIndex = 0;
+    let charIndex = 0;
+
+    const cursor = document.createElement("span");
+    cursor.classList.add("cursor");
+    poemEl.appendChild(cursor);
+
+    function type() {
+        if (lineIndex < poemLines.length) {
+
+            if (charIndex < poemLines[lineIndex].length) {
+
+                cursor.remove();
+                const char = poemLines[lineIndex][charIndex];
+
+                if (charIndex === 0 && char.trim() !== "") {
+                    poemEl.innerHTML += `<span class="glow">${char}</span>`;
+                } else {
+                    poemEl.innerHTML += char;
+                }
+
+                poemEl.appendChild(cursor);
+                charIndex++;
+                setTimeout(type, 35 + Math.random() * 40);
+
+            } else {
+                poemEl.innerHTML += "\n";
+                charIndex = 0;
+                lineIndex++;
+                setTimeout(type, 400);
+            }
+
+        } else {
+            cursor.remove();
+            setTimeout(showFinal, 1800);
+        }
+    }
+
+    type();
+}
+
+function showFinal() {
+    finalName.style.opacity = 1;
+
+    setTimeout(() => {
+        signature.style.opacity = 1;
+    }, 2000);
+}
+</script>
+
+</body>
+</html>
